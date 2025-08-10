@@ -438,11 +438,9 @@ nav li.active {
 
     const state = {role:null,user:{name:'Guest',wasteSaved:0,level:1,badges:0,history:[]}};
 
-    // render store cards (shows a preview and "View bags")
     function renderStores(){
       const el = document.getElementById('storeCards'); el.innerHTML='';
       stores.forEach(s=>{
-        // compute total bags
         const totalBags = s.bags.reduce((a,b)=>a+b.count,0);
         const card = document.createElement('div'); card.className='card';
         card.innerHTML = `
@@ -459,8 +457,7 @@ nav li.active {
         el.appendChild(card);
       })
     }
-
-    // open bag list modal for a store
+    
     function openBagList(storeId){
       const store = stores.find(s=>s.id===storeId);
       if(!store) return;
@@ -482,7 +479,6 @@ nav li.active {
 
     function closeBagModal(){ document.getElementById('bagModal').style.display='none'; }
 
-    // show detailed bag view (modal) including menu if restaurant
     function showBagDetail(storeId, bagId){
       const store = stores.find(s=>s.id===storeId); if(!store) return;
       const bag = store.bags.find(b=>b.bagId===bagId); if(!bag) return;
@@ -497,7 +493,6 @@ nav li.active {
       document.getElementById('bagModal').style.display='flex';
     }
 
-    // reserve logic
     function reserveBag(storeId, bagId){
       if(state.role !== 'user'){
         alert('You must join as a User to reserve bags.');
@@ -510,13 +505,10 @@ nav li.active {
       const already = state.user.history.find(h=>h.storeId===storeId && !h.refunded);
       if(already){ alert('You already reserved a bag from this store. One bag per store allowed.'); return }
 
-      // reserve
       bag.count -= 1;
-      // push order
       const order = {orderId:Date.now(),storeId,storeName:store.name,bagId,bagName:bag.name,weight:bag.weight,price:bag.price,pickup:bag.pickup};
       state.user.history.push(order);
       state.user.wasteSaved += bag.weight; document.getElementById('wasteSaved').textContent = state.user.wasteSaved.toFixed(1);
-      // update global bag count for store
       const totalBags = store.bags.reduce((a,b)=>a+b.count,0);
       const bagsEl = document.getElementById('bags-'+store.id);
       if(bagsEl) bagsEl.textContent = totalBags;
@@ -565,8 +557,6 @@ nav li.active {
   });
 }
 
-
-    // navigation handling
     document.querySelectorAll('nav li').forEach(li=>li.addEventListener('click',e=>{
       document.querySelectorAll('nav li').forEach(x=>x.classList.remove('active'));
       e.currentTarget.classList.add('active');
@@ -583,7 +573,6 @@ nav li.active {
       if(view==='company') renderCompanyBags();
     }
 
-    // modal controls
     document.getElementById('openModalBtn').addEventListener('click',()=>{document.getElementById('modal').style.display='flex'});
     document.getElementById('closeModal').addEventListener('click',()=>{document.getElementById('modal').style.display='none'});
 
@@ -595,19 +584,15 @@ nav li.active {
     document.getElementById('chooseCompany').addEventListener('click',()=>{
       state.role='company'; state.user.name='Company'; document.getElementById('displayName').textContent = state.user.name;
       const menu = document.getElementById('menuList');
-      // only add company dashboard once
       if(!Array.from(menu.children).some(li=>li.dataset.view==='company')){
         const li = document.createElement('li'); li.textContent = 'Company Dashboard'; li.dataset.view = 'company';
         menu.appendChild(li);
         li.addEventListener('click',e=>{document.querySelectorAll('nav li').forEach(x=>x.classList.remove('active')); e.currentTarget.classList.add('active'); showView('company');});
       }
-      // remove upload from user menu (upload is company-only already)
       document.getElementById('modal').style.display='none'; alert('Joined as Company. You can manage mystery bags.');
-      // jump to company view
       showView('company');
     });
 
-    // upload form for companies
     document.getElementById('uploadForm').addEventListener('submit',e=>{
       e.preventDefault();
       if(state.role!=='company'){alert('You must join as a Company to upload.'); return}
@@ -626,15 +611,11 @@ nav li.active {
       else{
         vendor = {id, name, type:'Vendor', desc, bags:[newBag]}; stores.push(vendor); alert('Created vendor and added bags.');
       }
-      // reset form
       document.getElementById('compName').value=''; document.getElementById('bagName').value=''; document.getElementById('bagDesc').value=''; document.getElementById('bagExpect').value=''; document.getElementById('bagWeight').value=''; document.getElementById('bagPrice').value=''; document.getElementById('bagCount').value='';
       showView('discover');
     });
-
-    // company dashboard rendering
     function renderCompanyBags(){
       const el = document.getElementById('companyBags'); el.innerHTML='';
-      // list vendors owned by this company - for prototype, show all
       stores.forEach(s=>{
         const card = document.createElement('div'); card.className='card';
         card.innerHTML = `<h3>${s.name}</h3><div class='small'>${s.desc}</div>`;
@@ -652,12 +633,12 @@ nav li.active {
     function deleteBag(storeId, bagId){
       const s = stores.find(x=>x.id===storeId); if(!s) return; s.bags = s.bags.filter(b=>b.bagId!==bagId); renderCompanyBags(); renderStores(); alert('Bag deleted (prototype).');
     }
-
-    // initial renders
+    
     function init(){ renderStores(); renderReels(); }
     init();
   </script>
 </body>
 
 </html>
+
 
