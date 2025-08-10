@@ -374,7 +374,6 @@ nav li.active {
   </div>
 
   <script>
-    // vendors with bag-level items and menus for restaurants
     const stores = [
       {
         id:1,
@@ -404,7 +403,6 @@ nav li.active {
           {bagId:301, name:'Dinner Rescue Bag', expect:['cooked meals','sides'],count:2,weight:1.5,price:45,pickup:'22:30',notes:'Leftover portions of that day\'s menu.'}
         ]
       },
-      // three additional vendors
       {
         id:4,
         name:'Falafel Express',
@@ -501,7 +499,6 @@ nav li.active {
       }
       const store = stores.find(s=>s.id===storeId); if(!store) return;
       const bag = store.bags.find(b=>b.bagId===bagId); if(!bag || bag.count<=0){alert('This bag is no longer available.'); return}
-      // one bag per store per user rule
       const already = state.user.history.find(h=>h.storeId===storeId && !h.refunded);
       if(already){ alert('You already reserved a bag from this store. One bag per store allowed.'); return }
 
@@ -604,7 +601,6 @@ nav li.active {
       const price=parseFloat(document.getElementById('bagPrice').value);
       const count=parseInt(document.getElementById('bagCount').value);
       const id = stores.length+1;
-      // if vendor already exists by name, append bag there instead
       let vendor = stores.find(s=>s.name.toLowerCase()===name.toLowerCase());
       const newBag = {bagId: Math.floor(Math.random()*900)+1000, name: bagName, expect, count, weight, price, pickup:'near close', notes:desc};
       if(vendor){ vendor.bags.push(newBag); alert('Added bags to existing vendor.'); }
@@ -640,5 +636,6 @@ nav li.active {
 </body>
 
 </html>
+
 
 
