@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hungry Habibi — Prototype (full)</title>
+  <style>
+    :root {
+  --bg: #f3f9f4;
+  --card: #ffffff;
+  --accent: #4caf50;
+  --accent-dark: #388e3c;
+  --muted: #6b7280;
+  --glass: rgba(255, 255, 255, 0.8);
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #1f2937;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  background: var(--accent);
+  color: #fff;
+}
+
+h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.btn {
+  background: var(--accent-dark);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 0 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 18px;
+}
+
+aside {
+  background: var(--card);
+  padding: 14px;
+  border-radius: 12px;
+  min-height: 480px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+main {
+  background: var(--card);
+  padding: 14px;
+  border-radius: 12px;
+  min-height: 480px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.profile {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+}
+
+nav li {
+  padding: 8px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+nav li.active {
+  background: var(--glass);
+  color: var(--accent-dark);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+  gap: 12px;
+}
+
+.card {
+  background: var(--glass);
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+  margin: 0 0 6px;
+}
+
+.small {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.footer {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.feed {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+
+.video-card {
+  height: 100vh;
+  position: relative;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: black;
+}
+
+.video-card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  max-width: 70%;
+}
+
+.video-actions {
+  position: absolute;
+  right: 10px;
+  bottom: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.video-actions button {
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.bag-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.bag-item {
+  background: var(--glass);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--card);
+  padding: 18px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width:880px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .container {
+    padding: 0 12px;
+  }
+}
+
+.choice {
+  display: inline-block;
+  padding: 12px 24px;
+  margin: 8px;
+  background-color: #facc15; /* yellow-400 */
+  color: #14532d; /* green-900 */
+  border-radius: 9999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.choice:hover {
+  background-color: #fde047; /* yellow-300 */
+}s
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display:flex;gap:12px;align-items:center">
+      <h1>Hungry Habibi</h1>
+      <span class="chip">Prototype — Full</span>
+    </div>
+    <div>
+      <button class="btn" id="openModalBtn">Join / Rescue</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="grid">
+      <aside>
+        <div class="profile">
+          <div class="avatar">HH</div>
+          <div>
+            <div style="font-weight:700" id="displayName">Guest</div>
+            <div class="small">Saved waste: <span id="wasteSaved">0</span> kg</div>
+          </div>
+        </div>
+
+        <nav>
+          <ul id="menuList">
+            <li class="active" data-view="discover">Discover</li>
+            <li data-view="foryou">For You</li>
+            <li data-view="bulletin">Bulletin</li>
+            <li data-view="about">About</li>
+            <li data-view="profile">Profile</li>
+          </ul>
+        </nav>
+
+        <div class="footer">
+          <div style="margin-top:12px">Rules</div>
+          <div class="small">Limited bags per store — one bag per user per pickup window to avoid exploitation.</div>
+        </div>
+      </aside>
+
+      <main id="main">
+        <!-- Discover -->
+        <div id="discoverView">
+          <h2>Near you — ending soon</h2>
+          <div class="cards" id="storeCards"></div>
+        </div>
+
+        <!-- For you -->
+        <div id="foryouView" style="display:none">
+  <div class="feed" id="videoFeed"></div>
+</div>
+
+
+        <!-- Upload (company only) -->
+        <div id="uploadView" style="display:none">
+          <h2>Upload a bag (company)</h2>
+          <form id="uploadForm">
+            <label>Company name<br/><input required id="compName"/></label><br/>
+            <label>Bag name (eg: Surprise Veg Bag)<br/><input required id="bagName"/></label><br/>
+            <label>Short description<br/><input required id="bagDesc"/></label><br/>
+            <label>Expected categories (comma separated — e.g. veg,fruit,bakery)<br/><input required id="bagExpect"/></label><br/>
+            <label>Estimated weight (kg)<br/><input required id="bagWeight" type="number" step="0.1"/></label><br/>
+            <label>Price (EGP)<br/><input required id="bagPrice" type="number" step="1"/></label><br/>
+            <label>Number of bags<br/><input required id="bagCount" type="number" min="1"/></label><br/>
+            <label>Pickup window (minutes before close)<br/><input id="pickupWindow" type="number" value="180"/></label><br/>
+            <button class="btn" type="submit">Create mystery bags</button>
+          </form>
+        </div>
+
+        <div id="bulletinView" style="display:none">
+          <h2>Bulletin</h2>
+          <p class="small">Updates, features, and community news.</p>
+        </div>
+
+        <div id="aboutView" style="display:none">
+          <h2>About Hungry Habibi</h2>
+          <p>Mission: Reduce waste, support local businesses, make food affordable and fun.</p>
+        </div>
+
+        <div id="profileView" style="display:none">
+          <h2>Your Profile</h2>
+          <p class="small">Level: <span id="level">1</span> — badges: <span id="badges">0</span></p>
+          <h3>Order history</h3>
+          <div id="history"></div>
+        </div>
+
+        <div id="companyView" style="display:none">
+          <h2>Company Dashboard</h2>
+          <p>Welcome, company! Manage your mystery bags here.</p>
+          <button class="btn" onclick="showView('upload')">Create new mystery bags</button>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Join modal -->
+  <div id="modal" class="modal-backdrop" style="display:none">
+    <div class="modal">
+      <h3>Join as</h3>
+      <div class="choices">
+        <div class="choice" id="chooseUser">User / Rescuer</div>
+        <div class="choice" id="chooseCompany">Company / Vendor</div>
+      </div>
+      <p class="small" style="margin-top:10px">Pick a role to continue. Companies can upload mystery bags; users can buy them.</p>
+      <div style="text-align:right;margin-top:10px"><button class="btn" id="closeModal">Close</button></div>
+    </div>
+  </div>
+
+  <!-- Bag detail modal -->
+  <div id="bagModal" class="modal-backdrop" style="display:none">
+    <div class="modal" id="bagModalInner">
+      <!-- filled dynamically -->
+    </div>
+  </div>
+
+  <script>
+    // vendors with bag-level items and menus for restaurants
+    const stores = [
+      {
+        id:1,
+        name:'Sultan Bakery',
+        type:'Bakery',
+        desc:'Bread, pastries, sweet rolls',
+        bags:[
+          {bagId:101, name:'Bakery Mix', expect:['bread','pastries'],count:3,weight:1.2,price:35,pickup:'21:30',notes:'Mix of day-old bread and pastries; still fresh.'}
+        ]
+      },
+      {
+        id:2,
+        name:'Ahlam Supermarket',
+        type:'Supermarket',
+        desc:'Produce & pantry',
+        bags:[
+          {bagId:201, name:'Veg & Fruit Surprise', expect:['vegetables','fruit','dairy'],count:5,weight:2.0,price:50,pickup:'20:00',notes:'Could include ripe bananas, tomatoes, yogurt, etc.'}
+        ]
+      },
+      {
+        id:3,
+        name:'Tasty Corner',
+        type:'Restaurant',
+        desc:'Mixed cooked meals',
+        menu:['Chicken Shawarma','Beef Stew','Rice & Salad'],
+        bags:[
+          {bagId:301, name:'Dinner Rescue Bag', expect:['cooked meals','sides'],count:2,weight:1.5,price:45,pickup:'22:30',notes:'Leftover portions of that day\'s menu.'}
+        ]
+      },
+      // three additional vendors
+      {
+        id:4,
+        name:'Falafel Express',
+        type:'Restaurant',
+        desc:'Quick falafel & wraps',
+        menu:['Falafel Plate','Hummus Bowl','Pita Wrap'],
+        bags:[
+          {bagId:401, name:'Falafel Mix', expect:['wraps','dips','salad'],count:4,weight:1.0,price:30,pickup:'20:30',notes:'Perfect for quick meals; includes dips and salads.'}
+        ]
+      },
+      {
+        id:5,
+        name:'Green Leaf Grocer',
+        type:'Shop',
+        desc:'Fresh produce and herbs',
+        bags:[
+          {bagId:501, name:'Seasonal Fruit Bag', expect:['fruit'],count:3,weight:1.8,price:40,pickup:'19:30',notes:'May contain slightly-bruised fruit close to best-before.'}
+        ]
+      },
+      {
+        id:6,
+        name:'Sushi House',
+        type:'Restaurant',
+        desc:'Fresh sushi and sides',
+        menu:['California Roll','Salmon Nigiri','Miso Soup'],
+        bags:[
+          {bagId:601, name:'Sushi Surprise', expect:['sushi','sides'],count:2,weight:1.0,price:60,pickup:'22:00',notes:'Assorted rolls and small sides prepared today.'}
+        ]
+      }
+    ];
+
+    const state = {role:null,user:{name:'Guest',wasteSaved:0,level:1,badges:0,history:[]}};
+
+    // render store cards (shows a preview and "View bags")
+    function renderStores(){
+      const el = document.getElementById('storeCards'); el.innerHTML='';
+      stores.forEach(s=>{
+        // compute total bags
+        const totalBags = s.bags.reduce((a,b)=>a+b.count,0);
+        const card = document.createElement('div'); card.className='card';
+        card.innerHTML = `
+          <h3>${s.name}</h3>
+          <div class="small">${s.type} · ${s.desc}</div>
+          <div class="small">Pickup example: ${s.bags.map(b=>b.pickup).join(', ')}</div>
+          <div class="meta">
+            <div class="small">Bags available: <strong id="bags-${s.id}">${totalBags}</strong></div>
+            <div style="text-align:right">
+              <div style="margin-top:8px"><button class="btn" onclick="openBagList(${s.id})">View bags</button></div>
+            </div>
+          </div>
+        `;
+        el.appendChild(card);
+      })
+    }
+
+    // open bag list modal for a store
+    function openBagList(storeId){
+      const store = stores.find(s=>s.id===storeId);
+      if(!store) return;
+      const modal = document.getElementById('bagModalInner');
+      let html = `<h3>${store.name} — Bags</h3><p class='small'>${store.desc}</p>`;
+      html += '<div class="bag-list">';
+      store.bags.forEach(b=>{
+        html += `<div class="bag-item"><strong>${b.name}</strong> — Est wt: ${b.weight}kg · ${b.price} EGP<br/><div class='small'>Expected: ${b.expect.join(', ')}</div><div class='small'>Left: <span id="bagcount-${b.bagId}">${b.count}</span></div><div style="margin-top:8px">`;
+        html += `<button class='btn' onclick="showBagDetail(${storeId},${b.bagId})">Details</button>`;
+        html += '&nbsp;';
+        html += `<button class='btn' onclick="reserveBag(${storeId},${b.bagId})">Reserve</button>`;
+        html += '</div></div>';
+      });
+      html += '</div>';
+      html += `<div style='text-align:right;margin-top:12px'><button class='btn' onclick="closeBagModal()">Close</button></div>`;
+      modal.innerHTML = html;
+      document.getElementById('bagModal').style.display='flex';
+    }
+
+    function closeBagModal(){ document.getElementById('bagModal').style.display='none'; }
+
+    // show detailed bag view (modal) including menu if restaurant
+    function showBagDetail(storeId, bagId){
+      const store = stores.find(s=>s.id===storeId); if(!store) return;
+      const bag = store.bags.find(b=>b.bagId===bagId); if(!bag) return;
+      let html = `<h3>${bag.name}</h3><p class='small'>${bag.notes || ''}</p>`;
+      html += `<p class='small'><strong>Expected categories:</strong> ${bag.expect.join(', ')}</p>`;
+      html += `<p class='small'><strong>Estimated weight:</strong> ${bag.weight} kg · <strong>${bag.price} EGP</strong></p>`;
+      if(store.type.toLowerCase()==='restaurant' && store.menu){
+        html += `<h4>Example menu at ${store.name}:</h4><ul>` + store.menu.map(m=>`<li class='small'>${m}</li>`).join('') + `</ul>`;
+      }
+      html += `<div style='margin-top:12px'><button class='btn' onclick="reserveBag(${storeId},${bagId})">Reserve this bag</button> <button class='btn' onclick="openBagList(${storeId})">Back to bags</button></div>`;
+      document.getElementById('bagModalInner').innerHTML = html;
+      document.getElementById('bagModal').style.display='flex';
+    }
+
+    // reserve logic
+    function reserveBag(storeId, bagId){
+      if(state.role !== 'user'){
+        alert('You must join as a User to reserve bags.');
+        document.getElementById('bagModal').style.display='none';
+        return;
+      }
+      const store = stores.find(s=>s.id===storeId); if(!store) return;
+      const bag = store.bags.find(b=>b.bagId===bagId); if(!bag || bag.count<=0){alert('This bag is no longer available.'); return}
+      // one bag per store per user rule
+      const already = state.user.history.find(h=>h.storeId===storeId && !h.refunded);
+      if(already){ alert('You already reserved a bag from this store. One bag per store allowed.'); return }
+
+      // reserve
+      bag.count -= 1;
+      // push order
+      const order = {orderId:Date.now(),storeId,storeName:store.name,bagId,bagName:bag.name,weight:bag.weight,price:bag.price,pickup:bag.pickup};
+      state.user.history.push(order);
+      state.user.wasteSaved += bag.weight; document.getElementById('wasteSaved').textContent = state.user.wasteSaved.toFixed(1);
+      // update global bag count for store
+      const totalBags = store.bags.reduce((a,b)=>a+b.count,0);
+      const bagsEl = document.getElementById('bags-'+store.id);
+      if(bagsEl) bagsEl.textContent = totalBags;
+      const bagCountEl = document.getElementById('bagcount-'+bagId);
+      if(bagCountEl) bagCountEl.textContent = bag.count;
+      renderHistory();
+      alert('Reserved! Pick up during the pickup window shown.');
+      document.getElementById('bagModal').style.display='none';
+    }
+
+    function renderHistory(){
+      const h = document.getElementById('history'); h.innerHTML='';
+      state.user.history.forEach(o=>{
+        const d = document.createElement('div'); d.className='card'; d.style.marginBottom='8px';
+        d.innerHTML = `<strong>${o.storeName}</strong><div class='small'>Bag: ${o.bagName} · Pickup: ${o.pickup || 'See store'}</div><div class='small'>Wt: ${o.weight} kg · ${o.price} EGP</div>`;
+        h.appendChild(d);
+      })
+    }
+
+    function renderReels(){
+  const feed = document.getElementById('videoFeed');
+  feed.innerHTML = '';
+  
+  const videos = [
+    { src: 'video1.mp4', caption: 'Sultan Bakery surprise bag!', user: '@bakerylover' },
+    { src: 'video2.mp4', caption: 'Fresh veggies rescued 🥦', user: '@veghero' },
+    { src: 'video3.mp4', caption: 'Falafel feast saved 😋', user: '@falafelfan' }
+  ];
+  
+  videos.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.innerHTML = `
+      <video src="${v.src}" autoplay loop muted playsinline></video>
+      <div class="video-overlay">
+        <strong>${v.user}</strong>
+        <p>${v.caption}</p>
+      </div>
+      <div class="video-actions">
+        <button>❤️</button>
+        <button>💬</button>
+        <button>↗</button>
+      </div>
+    `;
+    feed.appendChild(card);
+  });
+}
+
+
+    // navigation handling
+    document.querySelectorAll('nav li').forEach(li=>li.addEventListener('click',e=>{
+      document.querySelectorAll('nav li').forEach(x=>x.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      const view = e.currentTarget.dataset.view; showView(view);
+    }))
+
+    function showView(view){
+      ['discover','foryou','upload','bulletin','about','profile','company'].forEach(v=>{
+        const el = document.getElementById(v+ 'View'); if(el) el.style.display = (v===view? 'block' : 'none');
+      });
+      if(view==='foryou') renderReels();
+      if(view==='discover') renderStores();
+      if(view==='profile') renderHistory();
+      if(view==='company') renderCompanyBags();
+    }
+
+    // modal controls
+    document.getElementById('openModalBtn').addEventListener('click',()=>{document.getElementById('modal').style.display='flex'});
+    document.getElementById('closeModal').addEventListener('click',()=>{document.getElementById('modal').style.display='none'});
+
+    document.getElementById('chooseUser').addEventListener('click',()=>{
+      state.role='user'; state.user.name='Rescuer'; document.getElementById('displayName').textContent = state.user.name;
+      document.getElementById('modal').style.display='none'; alert('Joined as User. You can now rescue bags.');
+    });
+
+    document.getElementById('chooseCompany').addEventListener('click',()=>{
+      state.role='company'; state.user.name='Company'; document.getElementById('displayName').textContent = state.user.name;
+      const menu = document.getElementById('menuList');
+      // only add company dashboard once
+      if(!Array.from(menu.children).some(li=>li.dataset.view==='company')){
+        const li = document.createElement('li'); li.textContent = 'Company Dashboard'; li.dataset.view = 'company';
+        menu.appendChild(li);
+        li.addEventListener('click',e=>{document.querySelectorAll('nav li').forEach(x=>x.classList.remove('active')); e.currentTarget.classList.add('active'); showView('company');});
+      }
+      // remove upload from user menu (upload is company-only already)
+      document.getElementById('modal').style.display='none'; alert('Joined as Company. You can manage mystery bags.');
+      // jump to company view
+      showView('company');
+    });
+
+    // upload form for companies
+    document.getElementById('uploadForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      if(state.role!=='company'){alert('You must join as a Company to upload.'); return}
+      const name=document.getElementById('compName').value || 'Vendor';
+      const bagName=document.getElementById('bagName').value;
+      const desc=document.getElementById('bagDesc').value;
+      const expect = document.getElementById('bagExpect').value.split(',').map(x=>x.trim()).filter(Boolean);
+      const weight=parseFloat(document.getElementById('bagWeight').value);
+      const price=parseFloat(document.getElementById('bagPrice').value);
+      const count=parseInt(document.getElementById('bagCount').value);
+      const id = stores.length+1;
+      // if vendor already exists by name, append bag there instead
+      let vendor = stores.find(s=>s.name.toLowerCase()===name.toLowerCase());
+      const newBag = {bagId: Math.floor(Math.random()*900)+1000, name: bagName, expect, count, weight, price, pickup:'near close', notes:desc};
+      if(vendor){ vendor.bags.push(newBag); alert('Added bags to existing vendor.'); }
+      else{
+        vendor = {id, name, type:'Vendor', desc, bags:[newBag]}; stores.push(vendor); alert('Created vendor and added bags.');
+      }
+      // reset form
+      document.getElementById('compName').value=''; document.getElementById('bagName').value=''; document.getElementById('bagDesc').value=''; document.getElementById('bagExpect').value=''; document.getElementById('bagWeight').value=''; document.getElementById('bagPrice').value=''; document.getElementById('bagCount').value='';
+      showView('discover');
+    });
+
+    // company dashboard rendering
+    function renderCompanyBags(){
+      const el = document.getElementById('companyBags'); el.innerHTML='';
+      // list vendors owned by this company - for prototype, show all
+      stores.forEach(s=>{
+        const card = document.createElement('div'); card.className='card';
+        card.innerHTML = `<h3>${s.name}</h3><div class='small'>${s.desc}</div>`;
+        const list = document.createElement('div'); list.className='bag-list';
+        s.bags.forEach(b=>{
+          const bi = document.createElement('div'); bi.className='bag-item';
+          bi.innerHTML = `<strong>${b.name}</strong> · Left: <span id='compbag-${b.bagId}'>${b.count}</span> · ${b.weight}kg · ${b.price}EGP<br/><div style='margin-top:8px'><button class='btn' onclick='editBag(${s.id},${b.bagId})'>Edit</button> <button class='btn' onclick='deleteBag(${s.id},${b.bagId})'>Delete</button></div>`;
+          list.appendChild(bi);
+        });
+        card.appendChild(list); el.appendChild(card);
+      });
+    }
+
+    function editBag(storeId, bagId){ alert('Edit bag feature placeholder — implement as needed.'); }
+    function deleteBag(storeId, bagId){
+      const s = stores.find(x=>x.id===storeId); if(!s) return; s.bags = s.bags.filter(b=>b.bagId!==bagId); renderCompanyBags(); renderStores(); alert('Bag deleted (prototype).');
+    }
+
+    // initial renders
+    function init(){ renderStores(); renderReels(); }
+    init();
+  </script>
+</body>
+</html>

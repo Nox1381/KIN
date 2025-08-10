@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Food Waste Facts</title>
+  <style>
+    :root {
+      --bg: #dfffe0; /* more green background */
+      --card: #ffffff;
+      --accent: #08ee10;
+      --accent-dark: #209226;
+      --muted: #6b7280;
+    }
+    * { box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+    body { margin: 0; background: var(--bg); color: #222; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      width: 100%;
+      margin-bottom: 40px;
+    }
+    .fact-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .fact-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .fact-card p {
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+    button {
+      background: var(--accent-dark);
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <div class="fact-card">
+      <img src="https://images.unsplash.com/photo-1506806732259-39c2d0268443" alt="Fact 1">
+      <p>40% of all food is wasted globally every year.</p>
+    </div>
+    <div class="fact-card">
+      <img src="https://images.unsplash.com/photo-1528825871115-3581a5387919" alt="Fact 2">
+      <p>Every second, enough food to feed 50 people is thrown away.</p>
+    </div>
+    <div class="fact-card">
+      <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c" alt="Fact 3">
+      <p>Food waste produces more greenhouse gases than the entire airline industry.</p>
+    </div>
+    <div class="fact-card">
+      <img src="https://images.unsplash.com/photo-1542831371-d531d36971e6" alt="Fact 4">
+      <p>Over $1 trillion worth of food is wasted annually.</p>
+    </div>
+    <div class="fact-card">
+      <img src="https://images.unsplash.com/photo-1606787366850-de6330128bfc" alt="Fact 6">
+      <p>Wasted food could feed every hungry person on Earth twice over.</p>
+    </div>
+    <div class="fact-card">
+      <img src="https://images.unsplash.com/photo-1473187983305-f615310e7daa" alt="Fact 10">
+      <p>Cutting food waste in half could save billions in resources.</p>
+    </div>
+  </div>
+  <button onclick="window.location.href='app.html'">Save Food Now</button>
+</body>
+</html>
