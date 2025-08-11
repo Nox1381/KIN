@@ -514,329 +514,479 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-    const stores = [
-      {
-        id:1,
-        name:'Sultan Bakery',
-        type:'Bakery',
-        desc:'Bread, pastries, sweet rolls',
-        bags:[
-          {bagId:101, name:'Bakery Mix', expect:['bread','pastries'],count:3,weight:1.2,price:35,pickup:'21:30',notes:'Mix of day-old bread and pastries; still fresh.'}
-        ]
-      },
-      {
-        id:2,
-        name:'Ahlam Supermarket',
-        type:'Supermarket',
-        desc:'Produce & pantry',
-        bags:[
-          {bagId:201, name:'Veg & Fruit Surprise', expect:['vegetables','fruit','dairy'],count:5,weight:2.0,price:50,pickup:'20:00',notes:'Could include ripe bananas, tomatoes, yogurt, etc.'}
-        ]
-      },
-      {
-        id:3,
-        name:'Tasty Corner',
-        type:'Restaurant',
-        desc:'Mixed cooked meals',
-        menu:['Chicken Shawarma','Beef Stew','Rice & Salad'],
-        bags:[
-          {bagId:301, name:'Dinner Rescue Bag', expect:['cooked meals','sides'],count:2,weight:1.5,price:45,pickup:'22:30',notes:'Leftover portions of that day\'s menu.'}
-        ]
-      },
-      {
-        id:4,
-        name:'Falafel Express',
-        type:'Restaurant',
-        desc:'Quick falafel & wraps',
-        menu:['Falafel Plate','Hummus Bowl','Pita Wrap'],
-        bags:[
-          {bagId:401, name:'Falafel Mix', expect:['wraps','dips','salad'],count:4,weight:1.0,price:30,pickup:'20:30',notes:'Perfect for quick meals; includes dips and salads.'}
-        ]
-      },
-      {
-        id:5,
-        name:'Green Leaf Grocer',
-        type:'Shop',
-        desc:'Fresh produce and herbs',
-        bags:[
-          {bagId:501, name:'Seasonal Fruit Bag', expect:['fruit'],count:3,weight:1.8,price:40,pickup:'19:30',notes:'May contain slightly-bruised fruit close to best-before.'}
-        ]
-      },
-      {
-        id:6,
-        name:'Sushi House',
-        type:'Restaurant',
-        desc:'Fresh sushi and sides',
-        menu:['California Roll','Salmon Nigiri','Miso Soup'],
-        bags:[
-          {bagId:601, name:'Sushi Surprise', expect:['sushi','sides'],count:2,weight:1.0,price:60,pickup:'22:00',notes:'Assorted rolls and small sides prepared today.'}
-        ]
-      }
-    ];
 
-    const state = {role:null,user:{name:'Guest',wasteSaved:0,level:1,badges:0,history:[]}};
+  // --- Data ---
 
-    function renderStores(){
-      const el = document.getElementById('storeCards'); el.innerHTML='';
-      stores.forEach(s=>{
-        const totalBags = s.bags.reduce((a,b)=>a+b.count,0);
-        const card = document.createElement('div'); card.className='card';
-        card.innerHTML = `
-          <h3>${s.name}</h3>
-          <div class="small">${s.type} · ${s.desc}</div>
-          <div class="small">Pickup example: ${s.bags.map(b=>b.pickup).join(', ')}</div>
-          <div class="meta">
-            <div class="small">Bags available: <strong id="bags-${s.id}">${totalBags}</strong></div>
-            <div style="text-align:right">
-              <div style="margin-top:8px"><button class="btn" onclick="openBagList(${s.id})">View bags</button></div>
-            </div>
-          </div>
-        `;
-        el.appendChild(card);
-      })
+  const stores = [
+    {
+      id:1,
+      name:'Sultan Bakery',
+      type:'Bakery',
+      desc:'Bread, pastries, sweet rolls',
+      bags:[
+        {bagId:101, name:'Bakery Mix', expect:['bread','pastries'],count:3,weight:1.2,price:35,pickup:'21:30',notes:'Mix of day-old bread and pastries; still fresh.'}
+      ]
+    },
+    {
+      id:2,
+      name:'Ahlam Supermarket',
+      type:'Supermarket',
+      desc:'Produce & pantry',
+      bags:[
+        {bagId:201, name:'Veg & Fruit Surprise', expect:['vegetables','fruit','dairy'],count:5,weight:2.0,price:50,pickup:'20:00',notes:'Could include ripe bananas, tomatoes, yogurt, etc.'}
+      ]
+    },
+    {
+      id:3,
+      name:'Tasty Corner',
+      type:'Restaurant',
+      desc:'Mixed cooked meals',
+      menu:['Chicken Shawarma','Beef Stew','Rice & Salad'],
+      bags:[
+        {bagId:301, name:'Dinner Rescue Bag', expect:['cooked meals','sides'],count:2,weight:1.5,price:45,pickup:'22:30',notes:'Leftover portions of that day\'s menu.'}
+      ]
+    },
+    {
+      id:4,
+      name:'Falafel Express',
+      type:'Restaurant',
+      desc:'Quick falafel & wraps',
+      menu:['Falafel Plate','Hummus Bowl','Pita Wrap'],
+      bags:[
+        {bagId:401, name:'Falafel Mix', expect:['wraps','dips','salad'],count:4,weight:1.0,price:30,pickup:'20:30',notes:'Perfect for quick meals; includes dips and salads.'}
+      ]
+    },
+    {
+      id:5,
+      name:'Green Leaf Grocer',
+      type:'Shop',
+      desc:'Fresh produce and herbs',
+      bags:[
+        {bagId:501, name:'Seasonal Fruit Bag', expect:['fruit'],count:3,weight:1.8,price:40,pickup:'19:30',notes:'May contain slightly-bruised fruit close to best-before.'}
+      ]
+    },
+    {
+      id:6,
+      name:'Sushi House',
+      type:'Restaurant',
+      desc:'Fresh sushi and sides',
+      menu:['California Roll','Salmon Nigiri','Miso Soup'],
+      bags:[
+        {bagId:601, name:'Sushi Surprise', expect:['sushi','sides'],count:2,weight:1.0,price:60,pickup:'22:00',notes:'Assorted rolls and small sides prepared today.'}
+      ]
     }
+  ];
 
-    function showMessage(msg) {
-    const modal = document.getElementById('messageModal');
-    const textEl = document.getElementById('messageModalText');
-    textEl.textContent = msg;
-    modal.style.display = 'flex';
-  }
-  
-  document.getElementById('closeMessageModal').addEventListener('click', () => {
-    document.getElementById('messageModal').style.display = 'none';
-  });
+  // --- App State ---
 
-    
-    function openBagList(storeId){
-      const store = stores.find(s=>s.id===storeId);
-      if(!store) return;
-      const modal = document.getElementById('bagModalInner');
-      let html = `<h3>${store.name} — Bags</h3><p class='small'>${store.desc}</p>`;
-      html += '<div class="bag-list">';
-      store.bags.forEach(b=>{
-        html += `<div class="bag-item"><strong>${b.name}</strong> — Est wt: ${b.weight}kg · ${b.price} EGP<br/><div class='small'>Expected: ${b.expect.join(', ')}</div><div class='small'>Left: <span id="bagcount-${b.bagId}">${b.count}</span></div><div style="margin-top:8px">`;
-        html += `<button class='btn' onclick="showBagDetail(${storeId},${b.bagId})">Details</button>`;
-        html += '&nbsp;';
-        html += `<button class='btn' onclick="reserveBag(${storeId},${b.bagId})">Reserve</button>`;
-        html += '</div></div>';
-      });
-      html += '</div>';
-      html += `<div style='text-align:right;margin-top:12px'><button class='btn' onclick="closeBagModal()">Close</button></div>`;
-      modal.innerHTML = html;
-      document.getElementById('bagModal').style.display='flex';
+  const state = {
+    role: null,
+    user: {
+      name:'Guest',
+      wasteSaved: 0,
+      level: 1,
+      badges: 0,
+      history: []
     }
+  };
 
-    function closeBagModal(){ document.getElementById('bagModal').style.display='none'; }
+  // --- DOM Elements ---
 
-    function showBagDetail(storeId, bagId){
-      const store = stores.find(s=>s.id===storeId); if(!store) return;
-      const bag = store.bags.find(b=>b.bagId===bagId); if(!bag) return;
-      let html = `<h3>${bag.name}</h3><p class='small'>${bag.notes || ''}</p>`;
-      html += `<p class='small'><strong>Expected categories:</strong> ${bag.expect.join(', ')}</p>`;
-      html += `<p class='small'><strong>Estimated weight:</strong> ${bag.weight} kg · <strong>${bag.price} EGP</strong></p>`;
-      if(store.type.toLowerCase()==='restaurant' && store.menu){
-        html += `<h4>Example menu at ${store.name}:</h4><ul>` + store.menu.map(m=>`<li class='small'>${m}</li>`).join('') + `</ul>`;
-      }
-      html += `<div style='margin-top:12px'><button class='btn' onclick="reserveBag(${storeId},${bagId})">Reserve this bag</button> <button class='btn' onclick="openBagList(${storeId})">Back to bags</button></div>`;
-      document.getElementById('bagModalInner').innerHTML = html;
-      document.getElementById('bagModal').style.display='flex';
-    }
-
-    function reserveBag(storeId, bagId){
-      if(state.role !== 'user'){
-        showMessage('You must join as a User to reserve bags.');
-        document.getElementById('bagModal').style.display='none';
-        return;
-      }
-      const store = stores.find(s=>s.id===storeId); if(!store) return;
-      const bag = store.bags.find(b=>b.bagId===bagId); if(!bag || bag.count<=0){showMessage('This bag is no longer available.'); return}
-      const already = state.user.history.find(h=>h.storeId===storeId && !h.refunded);
-      if(already){ showMessage('You already reserved a bag from this store. One bag per store allowed.'); return }
-
-      bag.count -= 1;
-      const order = {orderId:Date.now(),storeId,storeName:store.name,bagId,bagName:bag.name,weight:bag.weight,price:bag.price,pickup:bag.pickup};
-      state.user.history.push(order);
-      state.user.wasteSaved += bag.weight; document.getElementById('wasteSaved').textContent = state.user.wasteSaved.toFixed(1);
-      const totalBags = store.bags.reduce((a,b)=>a+b.count,0);
-      const bagsEl = document.getElementById('bags-'+store.id);
-      if(bagsEl) bagsEl.textContent = totalBags;
-      const bagCountEl = document.getElementById('bagcount-'+bagId);
-      if(bagCountEl) bagCountEl.textContent = bag.count;
-      renderHistory();
-      showMessage('Reserved! Pick up during the pickup window shown.');
-      document.getElementById('bagModal').style.display='none';
-    }
-
-    function renderHistory(){
-      const h = document.getElementById('history'); h.innerHTML='';
-      state.user.history.forEach(o=>{
-        const d = document.createElement('div'); d.className='card'; d.style.marginBottom='8px';
-        d.innerHTML = `<strong>${o.storeName}</strong><div class='small'>Bag: ${o.bagName} · Pickup: ${o.pickup || 'See store'}</div><div class='small'>Wt: ${o.weight} kg · ${o.price} EGP</div>`;
-        h.appendChild(d);
-      })
-    }
-
-    function renderReels(){
-  const feed = document.getElementById('videoFeed');
-  feed.innerHTML = '';
-
-       const burgerBtn = document.getElementById('burgerBtn');
+  const storeCardsEl = document.getElementById('storeCards');
+  const messageModal = document.getElementById('messageModal');
+  const messageModalText = document.getElementById('messageModalText');
+  const bagModal = document.getElementById('bagModal');
+  const bagModalInner = document.getElementById('bagModalInner');
+  const displayNameEl = document.getElementById('displayName');
+  const wasteSavedEl = document.getElementById('wasteSaved');
+  const historyEl = document.getElementById('history');
+  const menuListEl = document.getElementById('menuList');
+  const burgerBtn = document.getElementById('burgerBtn');
   const sidebar = document.getElementById('sidebar');
 
+  // --- Utility Functions ---
+
+  function showMessage(msg) {
+    messageModalText.textContent = msg;
+    messageModal.style.display = 'flex';
+  }
+
+  function closeMessage() {
+    messageModal.style.display = 'none';
+  }
+
+  function renderStores(){
+    storeCardsEl.innerHTML = '';
+    stores.forEach(store => {
+      const totalBags = store.bags.reduce((sum, bag) => sum + bag.count, 0);
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h3>${store.name}</h3>
+        <div class="small">${store.type} · ${store.desc}</div>
+        <div class="small">Pickup example: ${store.bags.map(b => b.pickup).join(', ')}</div>
+        <div class="meta">
+          <div class="small">Bags available: <strong id="bags-${store.id}">${totalBags}</strong></div>
+          <div style="text-align:right">
+            <div style="margin-top:8px"><button class="btn" onclick="openBagList(${store.id})">View bags</button></div>
+          </div>
+        </div>
+      `;
+      storeCardsEl.appendChild(card);
+    });
+  }
+
+  function openBagList(storeId) {
+    const store = stores.find(s => s.id === storeId);
+    if (!store) return;
+
+    let html = `<h3>${store.name} — Bags</h3><p class='small'>${store.desc}</p><div class="bag-list">`;
+
+    store.bags.forEach(bag => {
+      html += `<div class="bag-item">
+        <strong>${bag.name}</strong> — Est wt: ${bag.weight}kg · ${bag.price} EGP<br/>
+        <div class='small'>Expected: ${bag.expect.join(', ')}</div>
+        <div class='small'>Left: <span id="bagcount-${bag.bagId}">${bag.count}</span></div>
+        <div style="margin-top:8px">
+          <button class='btn' onclick="showBagDetail(${storeId},${bag.bagId})">Details</button>
+          &nbsp;
+          <button class='btn' onclick="reserveBag(${storeId},${bag.bagId})">Reserve</button>
+        </div>
+      </div>`;
+    });
+
+    html += `</div>
+      <div style='text-align:right;margin-top:12px'>
+        <button class='btn' onclick="closeBagModal()">Close</button>
+      </div>`;
+
+    bagModalInner.innerHTML = html;
+    bagModal.style.display = 'flex';
+  }
+
+  function closeBagModal() {
+    bagModal.style.display = 'none';
+  }
+
+  function showBagDetail(storeId, bagId){
+    const store = stores.find(s => s.id === storeId);
+    if(!store) return;
+    const bag = store.bags.find(b => b.bagId === bagId);
+    if(!bag) return;
+
+    let html = `<h3>${bag.name}</h3>
+      <p class='small'>${bag.notes || ''}</p>
+      <p class='small'><strong>Expected categories:</strong> ${bag.expect.join(', ')}</p>
+      <p class='small'><strong>Estimated weight:</strong> ${bag.weight} kg · <strong>${bag.price} EGP</strong></p>`;
+
+    if(store.type.toLowerCase() === 'restaurant' && store.menu){
+      html += `<h4>Example menu at ${store.name}:</h4><ul>${store.menu.map(item => `<li class='small'>${item}</li>`).join('')}</ul>`;
+    }
+
+    html += `<div style='margin-top:12px'>
+      <button class='btn' onclick="reserveBag(${storeId},${bagId})">Reserve this bag</button>
+      <button class='btn' onclick="openBagList(${storeId})">Back to bags</button>
+    </div>`;
+
+    bagModalInner.innerHTML = html;
+    bagModal.style.display = 'flex';
+  }
+
+  function reserveBag(storeId, bagId){
+    if(state.role !== 'user'){
+      showMessage('You must join as a User to reserve bags.');
+      closeBagModal();
+      return;
+    }
+
+    const store = stores.find(s => s.id === storeId);
+    if(!store) return;
+
+    const bag = store.bags.find(b => b.bagId === bagId);
+    if(!bag || bag.count <= 0){
+      showMessage('This bag is no longer available.');
+      return;
+    }
+
+    // Check if user already reserved from this store
+    const alreadyReserved = state.user.history.find(h => h.storeId === storeId && !h.refunded);
+    if(alreadyReserved){
+      showMessage('You already reserved a bag from this store. One bag per store allowed.');
+      return;
+    }
+
+    // Decrement bag count & update state
+    bag.count -= 1;
+
+    const order = {
+      orderId: Date.now(),
+      storeId,
+      storeName: store.name,
+      bagId,
+      bagName: bag.name,
+      weight: bag.weight,
+      price: bag.price,
+      pickup: bag.pickup
+    };
+
+    state.user.history.push(order);
+    state.user.wasteSaved += bag.weight;
+
+    // Update UI
+    wasteSavedEl.textContent = state.user.wasteSaved.toFixed(1);
+    const bagsEl = document.getElementById('bags-' + store.id);
+    if(bagsEl) bagsEl.textContent = store.bags.reduce((sum,b) => sum + b.count, 0);
+    const bagCountEl = document.getElementById('bagcount-' + bagId);
+    if(bagCountEl) bagCountEl.textContent = bag.count;
+
+    renderHistory();
+    showMessage('Reserved! Pick up during the pickup window shown.');
+    closeBagModal();
+  }
+
+  function renderHistory(){
+    historyEl.innerHTML = '';
+    state.user.history.forEach(order => {
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.style.marginBottom = '8px';
+      div.innerHTML = `
+        <strong>${order.storeName}</strong>
+        <div class='small'>Bag: ${order.bagName} · Pickup: ${order.pickup || 'See store'}</div>
+        <div class='small'>Wt: ${order.weight} kg · ${order.price} EGP</div>
+      `;
+      historyEl.appendChild(div);
+    });
+  }
+
+  function renderReels(){
+    const feed = document.getElementById('videoFeed');
+    feed.innerHTML = '';
+
+    const videos = [
+      { src: 'video1.mp4', caption: 'Sultan Bakery surprise bag!', user: '@bakerylover' },
+      { src: 'video2.mp4', caption: 'Fresh veggies rescued 🥦', user: '@veghero' },
+      { src: 'video3.mp4', caption: 'Falafel feast saved 😋', user: '@falafelfan' }
+    ];
+
+    videos.forEach(video => {
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      card.innerHTML = `
+        <video src="${video.src}" autoplay loop muted playsinline></video>
+        <div class="video-overlay">
+          <strong>${video.user}</strong>
+          <p>${video.caption}</p>
+        </div>
+        <div class="video-actions">
+          <button>❤️</button>
+          <button>💬</button>
+          <button>↗</button>
+        </div>
+      `;
+      feed.appendChild(card);
+    });
+  }
+
+  // --- Event Listeners ---
+
+  // Burger menu toggle
   burgerBtn.addEventListener('click', () => {
-  sidebar.classList.toggle('open');
-  burgerBtn.classList.toggle('open');
-  const expanded = burgerBtn.getAttribute('aria-expanded') === 'true';
-  burgerBtn.setAttribute('aria-expanded', !expanded);
+    sidebar.classList.toggle('open');
+    burgerBtn.classList.toggle('open');
+    const expanded = burgerBtn.getAttribute('aria-expanded') === 'true';
+    burgerBtn.setAttribute('aria-expanded', String(!expanded));
+  });
+
+  // Close sidebar on menu item click, toggle active state, show views
+  menuListEl.querySelectorAll('li').forEach(li => {
+    li.addEventListener('click', e => {
+      // Set active class
+      menuListEl.querySelectorAll('li').forEach(x => x.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+
+      // Show the selected view
+      const view = e.currentTarget.dataset.view;
+      showView(view);
+
+      // Close sidebar on mobile
+      sidebar.classList.remove('open');
+      burgerBtn.classList.remove('open');
+      burgerBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Modal open/close buttons
+  document.getElementById('openModalBtn').addEventListener('click', () => {
+    document.getElementById('modal').style.display = 'flex';
+  });
+  document.getElementById('closeModal').addEventListener('click', () => {
+    document.getElementById('modal').style.display = 'none';
+  });
+
+  document.getElementById('closeMessageModal').addEventListener('click', closeMessage);
+
+  // Modal role choices
+  document.getElementById('chooseUser').addEventListener('click', () => {
+    state.role = 'user';
+    state.user.name = 'Rescuer';
+    displayNameEl.textContent = state.user.name;
+    document.getElementById('modal').style.display = 'none';
+    showMessage('Joined as User. You can now rescue bags.');
+  });
+
+  document.getElementById('chooseCompany').addEventListener('click', () => {
+    state.role = 'company';
+    state.user.name = 'Company';
+    displayNameEl.textContent = state.user.name;
+
+    // Add company dashboard menu item if not already present
+    if (!Array.from(menuListEl.children).some(li => li.dataset.view === 'company')) {
+      const li = document.createElement('li');
+      li.textContent = 'Company Dashboard';
+      li.dataset.view = 'company';
+      menuListEl.appendChild(li);
+
+      li.addEventListener('click', e => {
+        menuListEl.querySelectorAll('li').forEach(x => x.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        showView('company');
+      });
+    }
+
+    document.getElementById('modal').style.display = 'none';
+    showMessage('Joined as Company. You can manage mystery bags.');
+    showView('company');
+  });
+
+  // Upload form submission
+  document.getElementById('uploadForm').addEventListener('submit', e => {
+    e.preventDefault();
+    if (state.role !== 'company') {
+      showMessage('You must join as a Company to upload.');
+      return;
+    }
+
+    const name = document.getElementById('compName').value || 'Vendor';
+    const bagName = document.getElementById('bagName').value;
+    const desc = document.getElementById('bagDesc').value;
+    const expect = document.getElementById('bagExpect').value.split(',').map(x => x.trim()).filter(Boolean);
+    const weight = parseFloat(document.getElementById('bagWeight').value);
+    const price = parseFloat(document.getElementById('bagPrice').value);
+    const count = parseInt(document.getElementById('bagCount').value);
+    const id = stores.length + 1;
+
+    let vendor = stores.find(s => s.name.toLowerCase() === name.toLowerCase());
+    const newBag = {
+      bagId: Math.floor(Math.random() * 900) + 1000,
+      name: bagName,
+      expect,
+      count,
+      weight,
+      price,
+      pickup: 'near close',
+      notes: desc
+    };
+
+    if (vendor) {
+      vendor.bags.push(newBag);
+      showMessage('Added bags to existing vendor.');
+    } else {
+      vendor = { id, name, type: 'Vendor', desc, bags: [newBag] };
+      stores.push(vendor);
+      showMessage('Created vendor and added bags.');
+    }
+
+    // Clear form
+    ['compName','bagName','bagDesc','bagExpect','bagWeight','bagPrice','bagCount'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+
+    showView('discover');
+  });
+
+  // Company dashboard rendering and bag management
+  function renderCompanyBags(){
+    const companyBagsEl = document.getElementById('companyBags');
+    companyBagsEl.innerHTML = '';
+
+    stores.forEach(store => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<h3>${store.name}</h3><div class='small'>${store.desc}</div>`;
+
+      const list = document.createElement('div');
+      list.className = 'bag-list';
+
+      store.bags.forEach(bag => {
+        const bagItem = document.createElement('div');
+        bagItem.className = 'bag-item';
+        bagItem.innerHTML = `
+          <strong>${bag.name}</strong> · Left: <span id='compbag-${bag.bagId}'>${bag.count}</span> · ${bag.weight}kg · ${bag.price}EGP
+          <br/>
+          <div style='margin-top:8px'>
+            <button class='btn' onclick='editBag(${store.id},${bag.bagId})'>Edit</button>
+            <button class='btn' onclick='deleteBag(${store.id},${bag.bagId})'>Delete</button>
+          </div>
+        `;
+        list.appendChild(bagItem);
+      });
+
+      card.appendChild(list);
+      companyBagsEl.appendChild(card);
+    });
+  }
+
+  window.editBag = function(storeId, bagId){
+    showMessage('Edit bag feature placeholder — implement as needed.');
+  };
+
+  window.deleteBag = function(storeId, bagId){
+    const store = stores.find(s => s.id === storeId);
+    if(!store) return;
+
+    store.bags = store.bags.filter(b => b.bagId !== bagId);
+    renderCompanyBags();
+    renderStores();
+    showMessage('Bag deleted (prototype).');
+  };
+
+  // Show/hide views
+  function showView(view){
+    ['discover','foryou','upload','bulletin','about','profile','company'].forEach(v => {
+      const el = document.getElementById(v + 'View');
+      if(el) el.style.display = (v === view ? 'block' : 'none');
+    });
+
+    if(view === 'foryou') renderReels();
+    if(view === 'discover') renderStores();
+    if(view === 'profile') renderHistory();
+    if(view === 'company') renderCompanyBags();
+  }
+
+  // Initialize app UI
+  function init(){
+    renderStores();
+    renderReels();
+  }
+
+  init();
+
+  // Expose some functions globally if needed
+  window.openBagList = openBagList;
+  window.closeBagModal = closeBagModal;
+  window.showBagDetail = showBagDetail;
+  window.reserveBag = reserveBag;
+  window.showMessage = showMessage;
+
 });
 
-
-      const menuItems = document.querySelectorAll('#menuList li');
-
-menuItems.forEach(item => {
-  item.addEventListener('click', () => {
-    sidebar.classList.remove('open');
-    burgerBtn.setAttribute('aria-expanded', 'false');
-  });
-});
-
-      
-  const videos = [
-    { src: 'video1.mp4', caption: 'Sultan Bakery surprise bag!', user: '@bakerylover' },
-    { src: 'video2.mp4', caption: 'Fresh veggies rescued 🥦', user: '@veghero' },
-    { src: 'video3.mp4', caption: 'Falafel feast saved 😋', user: '@falafelfan' }
-  ];
-  
-  videos.forEach(v => {
-    const card = document.createElement('div');
-    card.className = 'video-card';
-    card.innerHTML = `
-      <video src="${v.src}" autoplay loop muted playsinline></video>
-      <div class="video-overlay">
-        <strong>${v.user}</strong>
-        <p>${v.caption}</p>
-      </div>
-      <div class="video-actions">
-        <button>❤️</button>
-        <button>💬</button>
-        <button>↗</button>
-      </div>
-    `;
-    feed.appendChild(card);
-  });
-}
-
-    document.querySelectorAll('nav li').forEach(li => li.addEventListener('click', e => {
-    document.querySelectorAll('nav li').forEach(x => x.classList.remove('active'));
-    e.currentTarget.classList.add('active');
-    const view = e.currentTarget.dataset.view;
-    showView(view);
-  
-    // Close sidebar & reset burger button on mobile
-    sidebar.classList.remove('open');
-    burgerBtn.classList.remove('open');
-    burgerBtn.setAttribute('aria-expanded', 'false');
-  }));
-
-
-    function showView(view){
-      ['discover','foryou','upload','bulletin','about','profile','company'].forEach(v=>{
-        const el = document.getElementById(v+ 'View'); if(el) el.style.display = (v===view? 'block' : 'none');
-      });
-      if(view==='foryou') renderReels();
-      if(view==='discover') renderStores();
-      if(view==='profile') renderHistory();
-      if(view==='company') renderCompanyBags();
-    }
-
-    document.getElementById('openModalBtn').addEventListener('click',()=>{document.getElementById('modal').style.display='flex'});
-    document.getElementById('closeModal').addEventListener('click',()=>{document.getElementById('modal').style.display='none'});
-
-    document.getElementById('chooseUser').addEventListener('click',()=>{
-      state.role='user'; state.user.name='Rescuer'; document.getElementById('displayName').textContent = state.user.name;
-      document.getElementById('modal').style.display='none'; showMessage('Joined as User. You can now rescue bags.');
-    });
-
-    document.getElementById('chooseCompany').addEventListener('click',()=>{
-      state.role='company'; state.user.name='Company'; document.getElementById('displayName').textContent = state.user.name;
-      const menu = document.getElementById('menuList');
-      if(!Array.from(menu.children).some(li=>li.dataset.view==='company')){
-        const li = document.createElement('li'); li.textContent = 'Company Dashboard'; li.dataset.view = 'company';
-        menu.appendChild(li);
-        li.addEventListener('click',e=>{document.querySelectorAll('nav li').forEach(x=>x.classList.remove('active')); e.currentTarget.classList.add('active'); showView('company');});
-      }
-      document.getElementById('modal').style.display='none'; showMessage('Joined as Company. You can manage mystery bags.');
-      showView('company');
-    });
-
-    document.getElementById('uploadForm').addEventListener('submit',e=>{
-      e.preventDefault();
-      if(state.role!=='company'){showMessage('You must join as a Company to upload.'); return}
-      const name=document.getElementById('compName').value || 'Vendor';
-      const bagName=document.getElementById('bagName').value;
-      const desc=document.getElementById('bagDesc').value;
-      const expect = document.getElementById('bagExpect').value.split(',').map(x=>x.trim()).filter(Boolean);
-      const weight=parseFloat(document.getElementById('bagWeight').value);
-      const price=parseFloat(document.getElementById('bagPrice').value);
-      const count=parseInt(document.getElementById('bagCount').value);
-      const id = stores.length+1;
-      let vendor = stores.find(s=>s.name.toLowerCase()===name.toLowerCase());
-      const newBag = {bagId: Math.floor(Math.random()*900)+1000, name: bagName, expect, count, weight, price, pickup:'near close', notes:desc};
-      if(vendor){ vendor.bags.push(newBag); showMessage('Added bags to existing vendor.'); }
-      else{
-        vendor = {id, name, type:'Vendor', desc, bags:[newBag]}; stores.push(vendor); showMessage('Created vendor and added bags.');
-      }
-      document.getElementById('compName').value=''; document.getElementById('bagName').value=''; document.getElementById('bagDesc').value=''; document.getElementById('bagExpect').value=''; document.getElementById('bagWeight').value=''; document.getElementById('bagPrice').value=''; document.getElementById('bagCount').value='';
-      showView('discover');
-    });
-    function renderCompanyBags(){
-      const el = document.getElementById('companyBags'); el.innerHTML='';
-      stores.forEach(s=>{
-        const card = document.createElement('div'); card.className='card';
-        card.innerHTML = `<h3>${s.name}</h3><div class='small'>${s.desc}</div>`;
-        const list = document.createElement('div'); list.className='bag-list';
-        s.bags.forEach(b=>{
-          const bi = document.createElement('div'); bi.className='bag-item';
-          bi.innerHTML = `<strong>${b.name}</strong> · Left: <span id='compbag-${b.bagId}'>${b.count}</span> · ${b.weight}kg · ${b.price}EGP<br/><div style='margin-top:8px'><button class='btn' onclick='editBag(${s.id},${b.bagId})'>Edit</button> <button class='btn' onclick='deleteBag(${s.id},${b.bagId})'>Delete</button></div>`;
-          list.appendChild(bi);
-        });
-        card.appendChild(list); el.appendChild(card);
-      });
-    }
-
-    function editBag(storeId, bagId){ showMessage('Edit bag feature placeholder — implement as needed.'); }
-    function deleteBag(storeId, bagId){
-      const s = stores.find(x=>x.id===storeId); if(!s) return; s.bags = s.bags.filter(b=>b.bagId!==bagId); renderCompanyBags(); renderStores(); showMessage('Bag deleted (prototype).');
-    }
-    
-    function init(){ renderStores(); renderReels(); }
-    init();
-
-    const burgerBtn = document.getElementById('burgerBtn');
-    const sidebar = document.getElementById('sidebar');
-    
-    burgerBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-      burgerBtn.classList.toggle('open');
-      const expanded = burgerBtn.getAttribute('aria-expanded') === 'true';
-      burgerBtn.setAttribute('aria-expanded', String(!expanded));
-    });
-
-    // Close sidebar when clicking on any menu item (inside your existing menu click handler)
-    document.querySelectorAll('#menuList li').forEach(item => {
-      item.addEventListener('click', () => {
-        sidebar.classList.remove('open');
-        burgerBtn.classList.remove('open');
-        burgerBtn.setAttribute('aria-expanded', 'false');
-      });
-    });
-    });
 
   </script>
 </body>
 
 </html>
+
 
 
 
