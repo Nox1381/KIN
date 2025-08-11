@@ -659,6 +659,16 @@
     const expanded = burgerBtn.getAttribute('aria-expanded') === 'true';
     burgerBtn.setAttribute('aria-expanded', !expanded);
   });
+
+      const menuItems = document.querySelectorAll('#menuList li');
+
+menuItems.forEach(item => {
+  item.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    burgerBtn.setAttribute('aria-expanded', 'false');
+  });
+});
+
       
   const videos = [
     { src: 'video1.mp4', caption: 'Sultan Bakery surprise bag!', user: '@bakerylover' },
@@ -767,6 +777,7 @@
 </body>
 
 </html>
+
 
 
 
