@@ -467,6 +467,15 @@
     </div>
   </div>
 
+  <!-- Message Modal -->
+  <div id="messageModal" class="modal-backdrop" style="display:none">
+    <div class="modal" style="max-width: 300px; text-align: center;">
+      <p id="messageModalText" style="margin-bottom: 20px;"></p>
+      <button class="btn" id="closeMessageModal">OK</button>
+    </div>
+  </div>
+
+
   <!-- Bag detail modal -->
   <div id="bagModal" class="modal-backdrop" style="display:none">
     <div class="modal" id="bagModalInner">
@@ -556,6 +565,18 @@
         el.appendChild(card);
       })
     }
+
+    function showMessage(msg) {
+    const modal = document.getElementById('messageModal');
+    const textEl = document.getElementById('messageModalText');
+    textEl.textContent = msg;
+    modal.style.display = 'flex';
+  }
+  
+  document.getElementById('closeMessageModal').addEventListener('click', () => {
+    document.getElementById('messageModal').style.display = 'none';
+  });
+
     
     function openBagList(storeId){
       const store = stores.find(s=>s.id===storeId);
@@ -594,14 +615,14 @@
 
     function reserveBag(storeId, bagId){
       if(state.role !== 'user'){
-        alert('You must join as a User to reserve bags.');
+        showMessage('You must join as a User to reserve bags.');
         document.getElementById('bagModal').style.display='none';
         return;
       }
       const store = stores.find(s=>s.id===storeId); if(!store) return;
-      const bag = store.bags.find(b=>b.bagId===bagId); if(!bag || bag.count<=0){alert('This bag is no longer available.'); return}
+      const bag = store.bags.find(b=>b.bagId===bagId); if(!bag || bag.count<=0){showMessage('This bag is no longer available.'); return}
       const already = state.user.history.find(h=>h.storeId===storeId && !h.refunded);
-      if(already){ alert('You already reserved a bag from this store. One bag per store allowed.'); return }
+      if(already){ showMessage('You already reserved a bag from this store. One bag per store allowed.'); return }
 
       bag.count -= 1;
       const order = {orderId:Date.now(),storeId,storeName:store.name,bagId,bagName:bag.name,weight:bag.weight,price:bag.price,pickup:bag.pickup};
@@ -613,7 +634,7 @@
       const bagCountEl = document.getElementById('bagcount-'+bagId);
       if(bagCountEl) bagCountEl.textContent = bag.count;
       renderHistory();
-      alert('Reserved! Pick up during the pickup window shown.');
+      showMessage('Reserved! Pick up during the pickup window shown.');
       document.getElementById('bagModal').style.display='none';
     }
 
@@ -676,7 +697,7 @@
 
     document.getElementById('chooseUser').addEventListener('click',()=>{
       state.role='user'; state.user.name='Rescuer'; document.getElementById('displayName').textContent = state.user.name;
-      document.getElementById('modal').style.display='none'; alert('Joined as User. You can now rescue bags.');
+      document.getElementById('modal').style.display='none'; showMessage('Joined as User. You can now rescue bags.');
     });
 
     document.getElementById('chooseCompany').addEventListener('click',()=>{
@@ -687,13 +708,13 @@
         menu.appendChild(li);
         li.addEventListener('click',e=>{document.querySelectorAll('nav li').forEach(x=>x.classList.remove('active')); e.currentTarget.classList.add('active'); showView('company');});
       }
-      document.getElementById('modal').style.display='none'; alert('Joined as Company. You can manage mystery bags.');
+      document.getElementById('modal').style.display='none'; showMessage('Joined as Company. You can manage mystery bags.');
       showView('company');
     });
 
     document.getElementById('uploadForm').addEventListener('submit',e=>{
       e.preventDefault();
-      if(state.role!=='company'){alert('You must join as a Company to upload.'); return}
+      if(state.role!=='company'){showMessage('You must join as a Company to upload.'); return}
       const name=document.getElementById('compName').value || 'Vendor';
       const bagName=document.getElementById('bagName').value;
       const desc=document.getElementById('bagDesc').value;
@@ -704,9 +725,9 @@
       const id = stores.length+1;
       let vendor = stores.find(s=>s.name.toLowerCase()===name.toLowerCase());
       const newBag = {bagId: Math.floor(Math.random()*900)+1000, name: bagName, expect, count, weight, price, pickup:'near close', notes:desc};
-      if(vendor){ vendor.bags.push(newBag); alert('Added bags to existing vendor.'); }
+      if(vendor){ vendor.bags.push(newBag); showMessage('Added bags to existing vendor.'); }
       else{
-        vendor = {id, name, type:'Vendor', desc, bags:[newBag]}; stores.push(vendor); alert('Created vendor and added bags.');
+        vendor = {id, name, type:'Vendor', desc, bags:[newBag]}; stores.push(vendor); showMessage('Created vendor and added bags.');
       }
       document.getElementById('compName').value=''; document.getElementById('bagName').value=''; document.getElementById('bagDesc').value=''; document.getElementById('bagExpect').value=''; document.getElementById('bagWeight').value=''; document.getElementById('bagPrice').value=''; document.getElementById('bagCount').value='';
       showView('discover');
@@ -726,9 +747,9 @@
       });
     }
 
-    function editBag(storeId, bagId){ alert('Edit bag feature placeholder — implement as needed.'); }
+    function editBag(storeId, bagId){ showMessage('Edit bag feature placeholder — implement as needed.'); }
     function deleteBag(storeId, bagId){
-      const s = stores.find(x=>x.id===storeId); if(!s) return; s.bags = s.bags.filter(b=>b.bagId!==bagId); renderCompanyBags(); renderStores(); alert('Bag deleted (prototype).');
+      const s = stores.find(x=>x.id===storeId); if(!s) return; s.bags = s.bags.filter(b=>b.bagId!==bagId); renderCompanyBags(); renderStores(); showMessage('Bag deleted (prototype).');
     }
     
     function init(){ renderStores(); renderReels(); }
@@ -737,4 +758,5 @@
 </body>
 
 </html>
+
 
