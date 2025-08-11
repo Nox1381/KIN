@@ -649,7 +649,17 @@
     function renderReels(){
   const feed = document.getElementById('videoFeed');
   feed.innerHTML = '';
-  
+
+       const burgerBtn = document.getElementById('burgerBtn');
+  const sidebar = document.getElementById('sidebar');
+
+  burgerBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    // Update aria-expanded attribute for accessibility
+    const expanded = burgerBtn.getAttribute('aria-expanded') === 'true';
+    burgerBtn.setAttribute('aria-expanded', !expanded);
+  });
+      
   const videos = [
     { src: 'video1.mp4', caption: 'Sultan Bakery surprise bag!', user: '@bakerylover' },
     { src: 'video2.mp4', caption: 'Fresh veggies rescued 🥦', user: '@veghero' },
@@ -757,6 +767,7 @@
 </body>
 
 </html>
+
 
 
 
