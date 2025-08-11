@@ -274,19 +274,16 @@
     .choice:hover {
       background-color: #fde047; /* yellow-300 */
     }
-
-    @media (max-width: 880px) {
-  /* BURGER MENU BUTTON */
+@media (max-width: 880px) {
   #burgerBtn {
-    display: block !important;
+    display: flex !important;
     position: fixed;
-    top: 10px;
-    left: 10px;
+    top: 60px;  /* lower to avoid overlapping header content */
+    left: 20px; /* move a bit right */
     z-index: 2000;
   }
-
+  
   #burgerBtn.burger {
-    display: flex;
     flex-direction: column;
     justify-content: space-around;
     width: 24px;
@@ -307,7 +304,6 @@
     transform-origin: 1px;
   }
 
-  /* Animate to X when open */
   #burgerBtn.burger.open span:nth-child(1) {
     transform: rotate(45deg);
   }
@@ -322,7 +318,6 @@
   }
 }
 
-/* Hide burger button outside mobile */
 @media (min-width: 881px) {
   #burgerBtn {
     display: none !important;
@@ -731,11 +726,18 @@ menuItems.forEach(item => {
   });
 }
 
-    document.querySelectorAll('nav li').forEach(li=>li.addEventListener('click',e=>{
-      document.querySelectorAll('nav li').forEach(x=>x.classList.remove('active'));
-      e.currentTarget.classList.add('active');
-      const view = e.currentTarget.dataset.view; showView(view);
-    }))
+    document.querySelectorAll('nav li').forEach(li => li.addEventListener('click', e => {
+    document.querySelectorAll('nav li').forEach(x => x.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+    const view = e.currentTarget.dataset.view;
+    showView(view);
+  
+    // Close sidebar & reset burger button on mobile
+    sidebar.classList.remove('open');
+    burgerBtn.classList.remove('open');
+    burgerBtn.setAttribute('aria-expanded', 'false');
+  }));
+
 
     function showView(view){
       ['discover','foryou','upload','bulletin','about','profile','company'].forEach(v=>{
@@ -809,10 +811,31 @@ menuItems.forEach(item => {
     
     function init(){ renderStores(); renderReels(); }
     init();
+
+    const burgerBtn = document.getElementById('burgerBtn');
+    const sidebar = document.getElementById('sidebar');
+    
+    burgerBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      burgerBtn.classList.toggle('open');
+      const expanded = burgerBtn.getAttribute('aria-expanded') === 'true';
+      burgerBtn.setAttribute('aria-expanded', String(!expanded));
+    });
+
+    // Close sidebar when clicking on any menu item (inside your existing menu click handler)
+    document.querySelectorAll('#menuList li').forEach(item => {
+      item.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        burgerBtn.classList.remove('open');
+        burgerBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+
   </script>
 </body>
 
 </html>
+
 
 
 
