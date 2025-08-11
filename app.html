@@ -275,21 +275,59 @@
       background-color: #fde047; /* yellow-300 */
     }
 
-    /* BURGER MENU BUTTON */
-    #burgerBtn {
-  display: block !important;
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 2000;
+    @media (max-width: 880px) {
+  /* BURGER MENU BUTTON */
+  #burgerBtn {
+    display: block !important;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 2000;
+  }
+
+  #burgerBtn.burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    box-sizing: content-box;
+  }
+
+  #burgerBtn.burger span {
+    width: 24px;
+    height: 3px;
+    background: white;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: 1px;
+  }
+
+  /* Animate to X when open */
+  #burgerBtn.burger.open span:nth-child(1) {
+    transform: rotate(45deg);
+  }
+
+  #burgerBtn.burger.open span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  #burgerBtn.burger.open span:nth-child(3) {
+    transform: rotate(-45deg);
+  }
 }
 
-
-    #burgerBtn svg {
-      fill: white;
-      width: 24px;
-      height: 24px;
-    }
+/* Hide burger button outside mobile */
+@media (min-width: 881px) {
+  #burgerBtn {
+    display: none !important;
+  }
+}
 
     /* MOBILE / RESPONSIVE */
     @media (max-width: 880px) {
@@ -322,11 +360,6 @@
         padding: 12px;
       }
 
-      /* Show burger button */
-      #burgerBtn {
-        display: block;
-      }
-
       header {
         justify-content: space-between;
       }
@@ -356,8 +389,10 @@
 <body>
   <header>
     <div style="display:flex; align-items:center; gap:12px;">
-      <button id="burgerBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="sidebar">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      <button id="burgerBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="sidebar" class="burger">
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
       <h1>KIN</h1>
       <span class="chip">Prototype — Full</span>
@@ -654,11 +689,12 @@
   const sidebar = document.getElementById('sidebar');
 
   burgerBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-    // Update aria-expanded attribute for accessibility
-    const expanded = burgerBtn.getAttribute('aria-expanded') === 'true';
-    burgerBtn.setAttribute('aria-expanded', !expanded);
-  });
+  sidebar.classList.toggle('open');
+  burgerBtn.classList.toggle('open');
+  const expanded = burgerBtn.getAttribute('aria-expanded') === 'true';
+  burgerBtn.setAttribute('aria-expanded', !expanded);
+});
+
 
       const menuItems = document.querySelectorAll('#menuList li');
 
@@ -777,6 +813,7 @@ menuItems.forEach(item => {
 </body>
 
 </html>
+
 
 
 
