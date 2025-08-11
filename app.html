@@ -120,24 +120,31 @@
       margin: 14px 0 0;
     }
 
-    nav li {
-      padding: 8px 6px;
-      border-radius: 8px;
-      cursor: pointer;
-      color: var(--muted);
-      user-select: none;
-      transition: background-color 0.2s ease;
-    }
+  nav li {
+  padding: 8px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--muted);
+  user-select: none;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
 
-    nav li.active {
-      background: var(--glass);
-      color: var(--accent-dark);
-      font-weight: 700;
-    }
+nav li.active {
+  background: var(--glass);
+  color: var(--accent-dark);
+  font-weight: 700;
+  opacity: 1; /* full opacity */
+}
 
-    nav li:hover:not(.active) {
-      background: rgba(0,0,0,0.05);
-    }
+nav li:not(.active) {
+  opacity: 0.5; /* dim non-active items */
+}
+
+nav li:hover:not(.active) {
+  background: rgba(0,0,0,0.05);
+  opacity: 0.8; /* optionally brighten on hover */
+}
+
 
     .cards {
       display: grid;
@@ -278,10 +285,23 @@
   #burgerBtn {
     display: flex !important;
     position: fixed;
-    top: 60px;  /* lower to avoid overlapping header content */
-    left: 20px; /* move a bit right */
+    top: 20px;
+    right: 20px;  /* changed from left: 20px to right: 20px */
+    left: auto;   /* reset left */
+    transform: none;
     z-index: 2000;
   }
+
+  
+
+  header > div:last-child {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+  }
+
   
   #burgerBtn.burger {
     flex-direction: column;
@@ -957,12 +977,22 @@
       const el = document.getElementById(v + 'View');
       if(el) el.style.display = (v === view ? 'block' : 'none');
     });
-
+    setActiveMenu(view);
     if(view === 'foryou') renderReels();
     if(view === 'discover') renderStores();
     if(view === 'profile') renderHistory();
     if(view === 'company') renderCompanyBags();
   }
+
+  function setActiveMenu(viewName) {
+  document.querySelectorAll('#menuList li').forEach(li => {
+    if (li.dataset.view === viewName) {
+      li.classList.add('active');
+    } else {
+      li.classList.remove('active');
+    }
+  });
+}
 
   // Initialize app UI
   function init(){
@@ -978,6 +1008,7 @@
   window.showBagDetail = showBagDetail;
   window.reserveBag = reserveBag;
   window.showMessage = showMessage;
+  window.showView = showView;
 
 });
 
@@ -986,12 +1017,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
