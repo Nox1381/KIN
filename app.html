@@ -6,262 +6,360 @@
   <title>KIN - App</title>
   <style>
     :root {
-  --bg: #f3f9f4;
-  --card: #ffffff;
-  --accent: #4caf50;
-  --accent-dark: #388e3c;
-  --muted: #6b7280;
-  --glass: rgba(255, 255, 255, 0.8);
-}
+      --bg: #f3f9f4;
+      --card: #ffffff;
+      --accent: #4caf50;
+      --accent-dark: #388e3c;
+      --muted: #6b7280;
+      --glass: rgba(255, 255, 255, 0.8);
+    }
 
-* {
-  box-sizing: border-box;
-  font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
-}
+    * {
+      box-sizing: border-box;
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+    }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: #1f2937;
-}
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #1f2937;
+      overflow-x: hidden;
+    }
 
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 24px;
-  background: var(--accent);
-  color: #fff;
-}
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      background: var(--accent);
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 1100;
+    }
 
-h1 {
-  margin: 0;
-  font-size: 20px;
-}
+    h1 {
+      margin: 0;
+      font-size: 20px;
+    }
 
-.btn {
-  background: var(--accent-dark);
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-}
+    .chip {
+      background: rgba(255 255 255 / 0.3);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
 
-.container {
-  max-width: 1100px;
-  margin: 24px auto;
-  padding: 0 18px;
-}
+    .btn {
+      background: var(--accent-dark);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 18px;
-}
+    .container {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 18px;
+      display: flex;
+      gap: 18px;
+      min-height: calc(100vh - 72px); /* header height approx */
+    }
 
-aside {
-  background: var(--card);
-  padding: 14px;
-  border-radius: 12px;
-  min-height: 480px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
+    /* Sidebar (aside) */
+    aside {
+      background: var(--card);
+      padding: 14px;
+      border-radius: 12px;
+      min-height: 480px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      width: 280px;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+      position: relative;
+      z-index: 1001;
+    }
 
-main {
-  background: var(--card);
-  padding: 14px;
-  border-radius: 12px;
-  min-height: 480px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
+    main {
+      background: var(--card);
+      padding: 14px;
+      border-radius: 12px;
+      min-height: 480px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      flex-grow: 1;
+      overflow-y: auto;
+    }
 
-.profile {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
+    .profile {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
 
-.avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
-  background: var(--accent);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-}
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+    }
 
-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 14px 0 0;
-}
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0 0;
+    }
 
-nav li {
-  padding: 8px 6px;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--muted);
-}
+    nav li {
+      padding: 8px 6px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--muted);
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
 
-nav li.active {
-  background: var(--glass);
-  color: var(--accent-dark);
-}
+    nav li.active {
+      background: var(--glass);
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
-  gap: 12px;
-}
+    nav li:hover:not(.active) {
+      background: rgba(0,0,0,0.05);
+    }
 
-.card {
-  background: var(--glass);
-  padding: 12px;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-}
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+      gap: 12px;
+    }
 
-.card h3 {
-  margin: 0 0 6px;
-}
+    .card {
+      background: var(--glass);
+      padding: 12px;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
 
-.small {
-  font-size: 13px;
-  color: var(--muted);
-}
+    .card h3 {
+      margin: 0 0 6px;
+    }
 
-.meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-}
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+    }
 
-.footer {
-  margin-top: 18px;
-  color: var(--muted);
-  font-size: 13px;
-}
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
 
-.feed {
-  height: 100vh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-}
+    .footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-.video-card {
-  height: 100vh;
-  position: relative;
-  scroll-snap-align: start;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: black;
-}
+    .feed {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+    }
 
-.video-card video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+    .video-card {
+      height: 100vh;
+      position: relative;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: black;
+    }
 
-.video-overlay {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  color: white;
-  max-width: 70%;
-}
+    .video-card video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-.video-actions {
-  position: absolute;
-  right: 10px;
-  bottom: 20%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
+    .video-overlay {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: white;
+      max-width: 70%;
+    }
 
-.video-actions button {
-  background: rgba(0,0,0,0.5);
-  border: none;
-  color: white;
-  padding: 8px;
-  border-radius: 50%;
-  cursor: pointer;
-}
+    .video-actions {
+      position: absolute;
+      right: 10px;
+      bottom: 20%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
 
-.bag-list {
-  display: grid;
-  gap: 8px;
-  margin-top: 10px;
-}
+    .video-actions button {
+      background: rgba(0,0,0,0.5);
+      border: none;
+      color: white;
+      padding: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
 
-.bag-item {
-  background: var(--glass);
-  padding: 10px;
-  border-radius: 8px;
-}
+    .bag-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
 
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
+    .bag-item {
+      background: var(--glass);
+      padding: 10px;
+      border-radius: 8px;
+    }
 
-.modal {
-  background: var(--card);
-  padding: 18px;
-  border-radius: 12px;
-  max-width: 500px;
-  width: 90%;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  animation: fadeIn 0.3s ease;
-}
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+    .modal {
+      background: var(--card);
+      padding: 18px;
+      border-radius: 12px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      animation: fadeIn 0.3s ease;
+    }
 
-@media (max-width:880px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-  .container {
-    padding: 0 12px;
-  }
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-.choice {
-  display: inline-block;
-  padding: 12px 24px;
-  margin: 8px;
-  background-color: #facc15; /* yellow-400 */
-  color: #14532d; /* green-900 */
-  border-radius: 9999px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-.choice:hover {
-  background-color: #fde047; /* yellow-300 */
-}s
+    .choice {
+      display: inline-block;
+      padding: 12px 24px;
+      margin: 8px;
+      background-color: #facc15; /* yellow-400 */
+      color: #14532d; /* green-900 */
+      border-radius: 9999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .choice:hover {
+      background-color: #fde047; /* yellow-300 */
+    }
+
+    /* BURGER MENU BUTTON */
+    #burgerBtn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+
+    #burgerBtn svg {
+      fill: white;
+      width: 24px;
+      height: 24px;
+    }
+
+    /* MOBILE / RESPONSIVE */
+    @media (max-width: 880px) {
+      .container {
+        flex-direction: row; /* still side by side */
+        padding: 0 12px;
+      }
+      aside {
+        position: fixed;
+        top: 72px; /* header height */
+        left: 0;
+        bottom: 0;
+        width: 250px;
+        min-height: 100vh;
+        padding: 20px 18px;
+        border-radius: 0 12px 12px 0;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+        background: var(--card);
+        transform: translateX(-110%);
+        transition: transform 0.3s ease;
+        z-index: 1500;
+        overflow-y: auto;
+      }
+      aside.open {
+        transform: translateX(0);
+      }
+
+      main {
+        min-height: calc(100vh - 72px);
+        padding: 12px;
+      }
+
+      /* Show burger button */
+      #burgerBtn {
+        display: block;
+      }
+
+      header {
+        justify-content: space-between;
+      }
+
+      .profile .avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+      }
+
+      nav ul {
+        margin-top: 8px;
+      }
+
+      nav li {
+        padding: 10px 8px;
+        font-size: 15px;
+      }
+
+      .footer {
+        font-size: 12px;
+      }
+    }
+
   </style>
 </head>
 <body>
   <header>
-    <div style="display:flex;gap:12px;align-items:center">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button id="burgerBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="sidebar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
       <h1>KIN</h1>
       <span class="chip">Prototype — Full</span>
     </div>
@@ -271,86 +369,83 @@ nav li.active {
   </header>
 
   <div class="container">
-    <div class="grid">
-      <aside>
-        <div class="profile">
-          <div class="avatar">HH</div>
-          <div>
-            <div style="font-weight:700" id="displayName">Guest</div>
-            <div class="small">Saved waste: <span id="wasteSaved">0</span> kg</div>
-          </div>
+    <aside id="sidebar" role="navigation" aria-label="Main menu">
+      <div class="profile">
+        <div class="avatar" aria-label="User avatar">HH</div>
+        <div>
+          <div style="font-weight:700" id="displayName">Guest</div>
+          <div class="small">Saved waste: <span id="wasteSaved">0</span> kg</div>
         </div>
+      </div>
 
-        <nav>
-          <ul id="menuList">
-            <li class="active" data-view="discover">Discover</li>
-            <li data-view="foryou">For You</li>
-            <li data-view="bulletin">Bulletin</li>
-            <li data-view="about">About</li>
-            <li data-view="profile">Profile</li>
-          </ul>
-        </nav>
+      <nav>
+        <ul id="menuList">
+          <li class="active" data-view="discover" tabindex="0" role="button">Discover</li>
+          <li data-view="foryou" tabindex="0" role="button">For You</li>
+          <li data-view="bulletin" tabindex="0" role="button">Bulletin</li>
+          <li data-view="about" tabindex="0" role="button">About</li>
+          <li data-view="profile" tabindex="0" role="button">Profile</li>
+        </ul>
+      </nav>
 
-        <div class="footer">
-          <div style="margin-top:12px">Rules</div>
-          <div class="small">Limited bags per store — one bag per user per pickup window to avoid exploitation.</div>
-        </div>
-      </aside>
+      <div class="footer">
+        <div style="margin-top:12px">Rules</div>
+        <div class="small">Limited bags per store — one bag per user per pickup window to avoid exploitation.</div>
+      </div>
+    </aside>
 
-      <main id="main">
-        <!-- Discover -->
-        <div id="discoverView">
-          <h2>Near you — ending soon</h2>
-          <div class="cards" id="storeCards"></div>
-        </div>
+    <main id="main" tabindex="-1">
+      <!-- Discover -->
+      <div id="discoverView">
+        <h2>Near you — ending soon</h2>
+        <div class="cards" id="storeCards"></div>
+      </div>
 
-        <!-- For you -->
-        <div id="foryouView" style="display:none">
-  <div class="feed" id="videoFeed"></div>
-</div>
+      <!-- For you -->
+      <div id="foryouView" style="display:none">
+        <div class="feed" id="videoFeed"></div>
+      </div>
 
+      <!-- Upload (company only) -->
+      <div id="uploadView" style="display:none">
+        <h2>Upload a bag (company)</h2>
+        <form id="uploadForm">
+          <label>Company name<br/><input required id="compName"/></label><br/>
+          <label>Bag name (eg: Surprise Veg Bag)<br/><input required id="bagName"/></label><br/>
+          <label>Short description<br/><input required id="bagDesc"/></label><br/>
+          <label>Expected categories (comma separated — e.g. veg,fruit,bakery)<br/><input required id="bagExpect"/></label><br/>
+          <label>Estimated weight (kg)<br/><input required id="bagWeight" type="number" step="0.1"/></label><br/>
+          <label>Price (EGP)<br/><input required id="bagPrice" type="number" step="1"/></label><br/>
+          <label>Number of bags<br/><input required id="bagCount" type="number" min="1"/></label><br/>
+          <label>Pickup window (minutes before close)<br/><input id="pickupWindow" type="number" value="180"/></label><br/>
+          <button class="btn" type="submit">Create mystery bags</button>
+        </form>
+      </div>
 
-        <!-- Upload (company only) -->
-        <div id="uploadView" style="display:none">
-          <h2>Upload a bag (company)</h2>
-          <form id="uploadForm">
-            <label>Company name<br/><input required id="compName"/></label><br/>
-            <label>Bag name (eg: Surprise Veg Bag)<br/><input required id="bagName"/></label><br/>
-            <label>Short description<br/><input required id="bagDesc"/></label><br/>
-            <label>Expected categories (comma separated — e.g. veg,fruit,bakery)<br/><input required id="bagExpect"/></label><br/>
-            <label>Estimated weight (kg)<br/><input required id="bagWeight" type="number" step="0.1"/></label><br/>
-            <label>Price (EGP)<br/><input required id="bagPrice" type="number" step="1"/></label><br/>
-            <label>Number of bags<br/><input required id="bagCount" type="number" min="1"/></label><br/>
-            <label>Pickup window (minutes before close)<br/><input id="pickupWindow" type="number" value="180"/></label><br/>
-            <button class="btn" type="submit">Create mystery bags</button>
-          </form>
-        </div>
+      <div id="bulletinView" style="display:none">
+        <h2>Bulletin</h2>
+        <p class="small">Updates, features, and community news.</p>
+      </div>
 
-        <div id="bulletinView" style="display:none">
-          <h2>Bulletin</h2>
-          <p class="small">Updates, features, and community news.</p>
-        </div>
+      <div id="aboutView" style="display:none">
+        <h2>About KIN</h2>
+        <p>Mission: Reduce waste, support local businesses, make food affordable and fun.</p>
+      </div>
 
-        <div id="aboutView" style="display:none">
-          <h2>About KIN</h2>
-          <p>Mission: Reduce waste, support local businesses, make food affordable and fun.</p>
-        </div>
+      <div id="profileView" style="display:none">
+        <h2>Your Profile</h2>
+        <p class="small">Level: <span id="level">1</span> — badges: <span id="badges">0</span></p>
+        <h3>Order history</h3>
+        <div id="history"></div>
+      </div>
 
-        <div id="profileView" style="display:none">
-          <h2>Your Profile</h2>
-          <p class="small">Level: <span id="level">1</span> — badges: <span id="badges">0</span></p>
-          <h3>Order history</h3>
-          <div id="history"></div>
-        </div>
-
-        <div id="companyView" style="display:none">
-          <h2>Company Dashboard</h2>
-          <p>Welcome, company! Manage your mystery bags here.</p>
-          <button class="btn" onclick="showView('upload')">Create new mystery bags</button>
-        </div>
-
-      </main>
-    </div>
+      <div id="companyView" style="display:none">
+        <h2>Company Dashboard</h2>
+        <p>Welcome, company! Manage your mystery bags here.</p>
+        <button class="btn" onclick="showView('upload')">Create new mystery bags</button>
+        <div id="companyBags"></div>
+      </div>
+    </main>
   </div>
 
   <!-- Join modal -->
@@ -636,9 +731,3 @@ nav li.active {
 </body>
 
 </html>
-
-
-
-
-
-
